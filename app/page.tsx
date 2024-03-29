@@ -44,7 +44,7 @@ export default function SPACEBALLS() {
             {`References Made: ${spaceballRefCount}`}
           </h2>
           <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl lg:text-6xl">
-            Did you make a spaceball reference?
+            Did you make a spaceballs reference?
           </h1>
           <div className="flex justify-center">
             <div className="space-y-5">
