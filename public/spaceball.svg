@@ -1,0 +1,9 @@
+<svg viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="spaceball">
+      <stop offset="10%" stop-color="gray"/>
+      <stop offset="95%" stop-color="#fff"/>
+    </radialGradient>
+  </defs>
+  <circle cx="5" cy="5" r="4" fill="url('#spaceball')"/>
+</svg>

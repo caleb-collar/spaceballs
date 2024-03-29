@@ -5,8 +5,15 @@ export default function SPACEBALLS() {
   return (
     <>
       <div className="fixed top-0 left-0 right-0 flex justify-between items-center p-4 z-50">
-        <div>Logo</div>
-        <DarkModeToggle/>
+        <Image
+          src="/spaceball.svg"
+          alt="a spaceball helmet"
+          className="light:invert"
+          width={42}
+          height={42}
+          priority
+        />
+        <DarkModeToggle />
       </div>
       <div className="flex flex-col items-center justify-center min-h-screen pt-16 py-6 space-y-2 text-center">
         <div className="space-y-10">
