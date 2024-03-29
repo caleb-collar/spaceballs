@@ -30,7 +30,7 @@ export default function SPACEBALLS() {
       <div className="fixed top-0 left-0 right-0 flex justify-between items-center p-4 z-50">
         <Image
           src="/spaceball.svg"
-          alt="a spaceball helmet"
+          alt="a spaceballs helmet"
           className="dark:invert"
           width={42}
           height={42}
