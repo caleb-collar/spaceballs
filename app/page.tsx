@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { DarkModeToggle } from '@/components/dark-mode-toggle'
 import { Button } from '@/components/ui/button'
+
 export default function SPACEBALLS() {
   return (
     <>
@@ -8,7 +9,7 @@ export default function SPACEBALLS() {
         <Image
           src="/spaceball.svg"
           alt="a spaceball helmet"
-          className="light:invert"
+          className="dark:invert"
           width={42}
           height={42}
           priority
