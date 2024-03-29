@@ -1,4 +1,5 @@
 import Image from "next/image";
+import {DarkModeToggle} from "@/components/dark-mode-toggle";
 
 export default function Home() {
   return (
@@ -25,6 +26,7 @@ export default function Home() {
               priority
             />
           </a>
+          <DarkModeToggle />
         </div>
       </div>
 
