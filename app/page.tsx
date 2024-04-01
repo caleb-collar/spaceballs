@@ -1,24 +1,72 @@
 'use client'
 import { DarkModeToggle } from '@/components/dark-mode-toggle'
 import { Button } from '@/components/ui/button'
+import { Confetti } from '@/lib/confetti'
 import { getCount, increment } from '@/lib/kv-client'
+import { helix } from 'ldrs'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
-import { Confetti } from '@/lib/confetti'
 
-export default function SPACEBALLS() {
-  const [spaceballRefCount, setspaceballRefCount] = useState(0)
+const HelixLoader = () => {
+  helix.register()
+  return <l-helix size="35" speed="1" color="white"></l-helix>
+}
+
+const Readout = ({
+  count,
+  loading,
+}: {
+  count: number | null
+  loading: boolean
+}) => {
+  return (
+    <div className="relative h-full w-full flex items-center justify-center">
+      <div
+        className={`absolute top-0 left-0 w-full h-full flex items-center justify-center ${
+          loading ? 'opacity-0' : 'opacity-100'
+        } transition-opacity duration-500`}
+      >
+        <h2 className="text-xl font-bold tracking-tighter sm:text-2xl lg:text-3xl">
+          {`References Made: ${count}`}
+        </h2>
+      </div>
+      <div
+        className={`absolute top-0 left-0 w-full h-full flex items-center justify-center ${
+          loading ? 'opacity-100' : 'opacity-0'
+        } transition-opacity duration-500`}
+      >
+        <div className="flex flex-row items-center space-x-2">
+          <h2 className="text-xl font-bold tracking-tighter sm:text-2xl lg:text-3xl">
+            {`References Made: `}
+          </h2>
+          <HelixLoader />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const SPACEBALLS = () => {
+  const [spaceballRefCount, setspaceballRefCount] = useState<number | null>(
+    null
+  )
+  const [loading, setLoading] = useState(true)
   const confettiRef = useRef<Confetti | null>(null)
 
   useEffect(() => {
     getCount().then((count) => {
       setspaceballRefCount(count)
       confettiRef.current = new Confetti('+1-button')
+      setTimeout(() => {
+        setLoading(false)
+      }, 1000) //This timeout is just to allow the loading animation to play for a moment.
     })
   }, [])
 
   useEffect(() => {
-    console.log(spaceballRefCount)
+    if (spaceballRefCount) {
+      console.log(`References Made: ${spaceballRefCount}`)
+    }
   }, [spaceballRefCount])
 
   const handleIncrement = async () => {
@@ -43,9 +91,7 @@ export default function SPACEBALLS() {
       </div>
       <div className="flex flex-col items-center justify-center min-h-screen pt-16 py-6 space-y-2 text-center">
         <div className="space-y-10">
-          <h2 className="text-xl font-bold tracking-tighter sm:text-2xl lg:text-3xl">
-            {`References Made: ${spaceballRefCount}`}
-          </h2>
+          <Readout count={spaceballRefCount} loading={loading} />
           <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl lg:text-6xl">
             Did you make a spaceballs reference?
           </h1>
@@ -69,3 +115,5 @@ export default function SPACEBALLS() {
     </>
   )
 }
+
+export default SPACEBALLS
