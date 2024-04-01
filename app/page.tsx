@@ -3,14 +3,17 @@ import { DarkModeToggle } from '@/components/dark-mode-toggle'
 import { Button } from '@/components/ui/button'
 import { getCount, increment } from '@/lib/kv-client'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { Confetti } from '@/lib/confetti'
 
 export default function SPACEBALLS() {
   const [spaceballRefCount, setspaceballRefCount] = useState(0)
+  const confettiRef = useRef<Confetti | null>(null)
 
   useEffect(() => {
     getCount().then((count) => {
       setspaceballRefCount(count)
+      confettiRef.current = new Confetti('+1-button')
     })
   }, [])
 
@@ -55,6 +58,7 @@ export default function SPACEBALLS() {
                 variant="outline"
                 className="text-base scale-125"
                 onClick={handleIncrement}
+                id="+1-button"
               >
                 +1
               </Button>
