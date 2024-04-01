@@ -1,7 +1,7 @@
 'use server'
 import { createClient } from '@vercel/kv'
 
-async function getClient() {
+const getClient = async () => {
   const url = process.env.KV_REST_API_URL
   const token = process.env.KV_REST_API_TOKEN
   if (!url || !token) {
@@ -13,7 +13,7 @@ async function getClient() {
   })
 }
 
-export async function increment() {
+export const increment = async () => {
   try {
     const kv = await getClient()
     await kv.incr('spaceballs')
@@ -22,7 +22,7 @@ export async function increment() {
   }
 }
 
-export async function getCount(): Promise<number> {
+export const getCount = async (): Promise<number> => {
   try {
     const kv = await getClient()
     const count = await kv.get('spaceballs')
@@ -33,7 +33,7 @@ export async function getCount(): Promise<number> {
   }
 }
 
-export async function reset() {
+export const reset = async () => {
   try {
     const kv = await getClient()
     await kv.set('spaceballs', '0')

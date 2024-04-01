@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { getCount, increment } from '@/lib/kv-client'
+import { getCount, increment } from '@/lib/kv-client';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function POST(request: NextRequest) {
+export const POST = async (request: NextRequest) => {
   let resJson: { count?: number; error?: any; status?: number } = {}
   try {
     await increment()
