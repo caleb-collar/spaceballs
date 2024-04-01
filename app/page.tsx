@@ -47,21 +47,35 @@ const Readout = ({
 }
 
 const SPACEBALLS = () => {
+  const MAX_POLLS = 7 //Max number of times to poll in a session
+  const POLL_INTERVAL = 4000 //Poll interval in ms
+
   const [spaceballRefCount, setspaceballRefCount] = useState<number | null>(
     null
   )
   const [loading, setLoading] = useState(true)
+  const [pollCount, setPollCount] = useState(0)
   const confettiRef = useRef<Confetti | null>(null)
 
   useEffect(() => {
-    getCount().then((count) => {
-      setspaceballRefCount(count)
-      confettiRef.current = new Confetti('+1-button')
-      setTimeout(() => {
-        setLoading(false)
-      }, 1000) //This timeout is just to allow the loading animation to play for a moment.
-    })
-  }, [])
+    const interval = setInterval(() => {
+      if (pollCount >= MAX_POLLS) {
+        clearInterval(interval)
+      } else {
+        getCount().then((count) => {
+          setspaceballRefCount(count)
+          confettiRef.current = new Confetti('+1-button')
+          setTimeout(() => {
+            setLoading(false)
+          }, 1000) //This timeout is just to allow the loading animation to play for a moment.
+        })
+        setPollCount(pollCount + 1)
+      }
+    }, POLL_INTERVAL)
+
+    // Clear interval on component unmount
+    return () => clearInterval(interval)
+  }, [pollCount])
 
   useEffect(() => {
     if (spaceballRefCount) {
@@ -73,6 +87,7 @@ const SPACEBALLS = () => {
     await increment()
     getCount().then((count) => {
       setspaceballRefCount(count)
+      setPollCount(0)
     })
   }
 
