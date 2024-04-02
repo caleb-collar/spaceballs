@@ -3,13 +3,16 @@ import { DarkModeToggle } from '@/components/dark-mode-toggle'
 import { Button } from '@/components/ui/button'
 import { Confetti } from '@/lib/confetti'
 import { getCount, increment } from '@/lib/kv-client'
-import { helix } from 'ldrs'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 
-const HelixLoader = () => {
+const getLoader = async () => {
+  const { helix } = await import('ldrs')
   helix.register()
-  return <l-helix size="35" speed="1" color="white"></l-helix>
+}
+
+const HelixLoader = () => {
+  return <l-helix size="35" speed="1" color="white" />
 }
 
 const Readout = ({
@@ -49,6 +52,7 @@ const Readout = ({
 const SPACEBALLS = () => {
   const MAX_POLLS = 7 //Max number of times to poll in a session
   const POLL_INTERVAL = 4000 //Poll interval in ms
+  const LOADER_HYSTERESIS = 1000 //Time to wait before hiding loader
 
   const [spaceballRefCount, setspaceballRefCount] = useState<number | null>(
     null
@@ -58,23 +62,29 @@ const SPACEBALLS = () => {
   const confettiRef = useRef<Confetti | null>(null)
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (pollCount >= MAX_POLLS) {
-        clearInterval(interval)
-      } else {
-        getCount().then((count) => {
-          setspaceballRefCount(count)
-          confettiRef.current = new Confetti('+1-button')
-          setTimeout(() => {
-            setLoading(false)
-          }, 1000) //This timeout is just to allow the loading animation to play for a moment.
-        })
-        setPollCount(pollCount + 1)
-      }
-    }, POLL_INTERVAL)
-
+    let interval: NodeJS.Timeout
+    getLoader().then(() => {
+      interval = setInterval(() => {
+        if (pollCount >= MAX_POLLS) {
+          clearInterval(interval)
+        } else {
+          getCount().then((count) => {
+            setspaceballRefCount(count)
+            confettiRef.current = new Confetti('+1-button')
+            setTimeout(() => {
+              setLoading(false)
+            }, LOADER_HYSTERESIS)
+          })
+          setPollCount(pollCount + 1)
+        }
+      }, POLL_INTERVAL)
+    })
     // Clear interval on component unmount
-    return () => clearInterval(interval)
+    return () => {
+      if (interval) {
+        clearInterval(interval)
+      }
+    }
   }, [pollCount])
 
   useEffect(() => {
