@@ -52,7 +52,7 @@ const Readout = ({
 const SPACEBALLS = () => {
   const MAX_POLLS = 7 //Max number of times to poll in a session
   const POLL_INTERVAL = 4000 //Poll interval in ms
-  const LOADER_HYSTERESIS = 1000 //Time to wait before hiding loader
+  const LOADER_HYSTERESIS = 500 //Time to wait before hiding loader
 
   const [spaceballRefCount, setspaceballRefCount] = useState<number | null>(
     null
