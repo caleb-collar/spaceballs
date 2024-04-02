@@ -14,7 +14,6 @@ const getLoader = async () => {
 
 const HelixLoader = ({ theme }: { theme: 'light' | 'dark' }) => {
   const color = theme === 'dark' ? 'white' : 'black'
-  console.log(color)
   return color ? <l-helix size="35" speed="1" color={color} /> : null
 }
 
@@ -26,7 +25,6 @@ const Readout = ({
   loading: boolean
 }) => {
   let { resolvedTheme } = useTheme() as { resolvedTheme: 'light' | 'dark' }
-  if (!resolvedTheme) resolvedTheme = 'dark'
   return (
     <div className="relative h-full w-full flex items-center justify-center">
       <div
@@ -59,6 +57,7 @@ const SPACEBALLS = () => {
   const POLL_INTERVAL = 4000 //Poll interval in ms
   const LOADER_HYSTERESIS = 500 //Time to wait before hiding loader
 
+  const [mounted, setMounted] = useState(false)
   const [spaceballRefCount, setspaceballRefCount] = useState<number | null>(
     null
   )
@@ -67,30 +66,36 @@ const SPACEBALLS = () => {
   const confettiRef = useRef<Confetti | null>(null)
 
   useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
     let interval: NodeJS.Timeout
-    getLoader().then(() => {
-      interval = setInterval(() => {
-        if (pollCount >= MAX_POLLS) {
-          clearInterval(interval)
-        } else {
-          getCount().then((count) => {
-            setspaceballRefCount(count)
-            confettiRef.current = new Confetti('+1-button')
-            setTimeout(() => {
-              setLoading(false)
-            }, LOADER_HYSTERESIS)
-          })
-          setPollCount(pollCount + 1)
-        }
-      }, POLL_INTERVAL)
-    })
+    if (mounted) {
+      getLoader().then(() => {
+        interval = setInterval(() => {
+          if (pollCount >= MAX_POLLS) {
+            clearInterval(interval)
+          } else {
+            getCount().then((count) => {
+              setspaceballRefCount(count)
+              confettiRef.current = new Confetti('+1-button')
+              setTimeout(() => {
+                setLoading(false)
+              }, LOADER_HYSTERESIS)
+            })
+            setPollCount(pollCount + 1)
+          }
+        }, POLL_INTERVAL)
+      })
+    }
     // Clear interval on component unmount
     return () => {
       if (interval) {
         clearInterval(interval)
       }
     }
-  }, [pollCount])
+  }, [mounted, pollCount])
 
   useEffect(() => {
     if (spaceballRefCount) {
@@ -106,7 +111,7 @@ const SPACEBALLS = () => {
     })
   }
 
-  return (
+  return mounted ? (
     <>
       <div className="fixed top-0 left-0 right-0 flex justify-between items-center p-4 z-50">
         <Image
@@ -143,7 +148,7 @@ const SPACEBALLS = () => {
         </div>
       </div>
     </>
-  )
+  ) : null
 }
 
 export default SPACEBALLS
