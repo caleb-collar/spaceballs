@@ -136,6 +136,7 @@ const SPACEBALLS = () => {
                 Click the button 👇
               </p>
               <Button
+                disabled={loading}
                 variant="outline"
                 className="text-base scale-125"
                 onClick={handleIncrement}
