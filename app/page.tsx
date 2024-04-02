@@ -3,6 +3,7 @@ import { DarkModeToggle } from '@/components/dark-mode-toggle'
 import { Button } from '@/components/ui/button'
 import { Confetti } from '@/lib/confetti'
 import { getCount, increment } from '@/lib/kv-client'
+import { useTheme } from 'next-themes'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 
@@ -11,8 +12,10 @@ const getLoader = async () => {
   helix.register()
 }
 
-const HelixLoader = () => {
-  return <l-helix size="35" speed="1" color="white" />
+const HelixLoader = ({ theme }: { theme: 'light' | 'dark' }) => {
+  const color = theme === 'dark' ? 'white' : 'black'
+  console.log(color)
+  return color ? <l-helix size="35" speed="1" color={color} /> : null
 }
 
 const Readout = ({
@@ -22,6 +25,8 @@ const Readout = ({
   count: number | null
   loading: boolean
 }) => {
+  let { resolvedTheme } = useTheme() as { resolvedTheme: 'light' | 'dark' }
+  if (!resolvedTheme) resolvedTheme = 'dark'
   return (
     <div className="relative h-full w-full flex items-center justify-center">
       <div
@@ -42,7 +47,7 @@ const Readout = ({
           <h2 className="text-xl font-bold tracking-tighter sm:text-2xl lg:text-3xl">
             {`References Made: `}
           </h2>
-          <HelixLoader />
+          <HelixLoader theme={resolvedTheme} />
         </div>
       </div>
     </div>
